@@ -3,49 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Education App</title>
+  <title>SmartLearn - Education Tools</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <img src="brain.png" alt="Brain Logo">
-    <h1>Education</h1>
+    <div class="logo">
+      <img src="brain.png" alt="Brain Logo">
+    </div>
+    <h1>SmartLearn</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flashcards.html">Flashcards</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="tracker.html">Lesson Tracker</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main>
-    <section id="flashcards">
-      <h2>Flashcards</h2>
-      <div class="card" onclick="flipCard()">
-        <div id="card-front">What is HTML?</div>
-        <div id="card-back" style="display: none;">HyperText Markup Language</div>
+    <section class="intro">
+      <h2>Welcome to SmartLearn</h2>
+      <p>Explore our educational tools: flashcards, adaptive quizzes, habit tracking, and markdown notes to enhance your learning experience.</p>
+    </section>
+
+    <section class="features">
+      <div class="feature">
+        <h3>🃏 Flashcards</h3>
+        <p>Interactive flashcard viewer with flip animation and spaced repetition engine.</p>
+        <a href="flashcards.html" class="btn">Try Flashcards</a>
       </div>
-      <button onclick="markKnow()">Know</button>
-      <button onclick="markDontKnow()">Don’t Know</button>
-    </section>
 
-    <section id="quiz">
-      <h2>Quiz</h2>
-      <p id="question">What is 2 + 2?</p>
-      <button onclick="answer(4)">4</button>
-      <button onclick="answer(5)">5</button>
-      <p id="quiz-result"></p>
-    </section>
+      <div class="feature">
+        <h3>🧠 Adaptive Quiz</h3>
+        <p>Smart quiz system that adapts to your skill level and tracks your scores.</p>
+        <a href="quiz.html" class="btn">Take a Quiz</a>
+      </div>
 
-    <section id="checklist">
-      <h2>Daily Habit</h2>
-      <input type="checkbox" onclick="updateProgress()"> Read a book<br>
-      <input type="checkbox" onclick="updateProgress()"> Watch tutorial<br>
-      <div id="progress-bar"><div id="progress"></div></div>
-    </section>
+      <div class="feature">
+        <h3>📓 Markdown Notes</h3>
+        <p>Live preview markdown editor for clean and structured study notes.</p>
+        <a href="notes.html" class="btn">Write Notes</a>
+      </div>
 
-    <section id="markdown-editor">
-      <h2>Markdown Note Editor</h2>
-      <textarea id="markdown" oninput="renderMarkdown()"></textarea>
-      <div id="preview"></div>
+      <div class="feature">
+        <h3>📅 Lesson Tracker</h3>
+        <p>Track your lessons, drag to reschedule, and build learning habits.</p>
+        <a href="tracker.html" class="btn">View Tracker</a>
+      </div>
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <a href="index.html">Home</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="quiz.html">Quizzes</a>
+        <a href="notes.html">Notes</a>
+        <a href="tracker.html">Tracker</a>
+      </div>
+      
+      <div class="footer-contact">
+        <h3>Contact</h3>
+        <p><i>📧</i> contact@smartlearn.com</p>
+        <p><i>📱</i> +1 (123) 456-7890</p>
+        <div class="social-links">
+          <a href="#" aria-label="Twitter">🐦</a>
+          <a href="#" aria-label="Facebook">👍</a>
+          <a href="#" aria-label="Instagram">📷</a>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        <p>&copy; 2025 SmartLearn. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
 
