@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Education App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <img src="brain.png" alt="Brain Logo">
+    <h1>Education</h1>
+  </header>
+
+  <main>
+    <section id="flashcards">
+      <h2>Flashcards</h2>
+      <div class="card" onclick="flipCard()">
+        <div id="card-front">What is HTML?</div>
+        <div id="card-back" style="display: none;">HyperText Markup Language</div>
+      </div>
+      <button onclick="markKnow()">Know</button>
+      <button onclick="markDontKnow()">Don’t Know</button>
+    </section>
+
+    <section id="quiz">
+      <h2>Quiz</h2>
+      <p id="question">What is 2 + 2?</p>
+      <button onclick="answer(4)">4</button>
+      <button onclick="answer(5)">5</button>
+      <p id="quiz-result"></p>
+    </section>
+
+    <section id="checklist">
+      <h2>Daily Habit</h2>
+      <input type="checkbox" onclick="updateProgress()"> Read a book<br>
+      <input type="checkbox" onclick="updateProgress()"> Watch tutorial<br>
+      <div id="progress-bar"><div id="progress"></div></div>
+    </section>
+
+    <section id="markdown-editor">
+      <h2>Markdown Note Editor</h2>
+      <textarea id="markdown" oninput="renderMarkdown()"></textarea>
+      <div id="preview"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
 
