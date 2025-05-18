@@ -5,6 +5,256 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartLearn - Flashcards</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f5f7fa; }
+    .main-section {
+      max-width: 800px;
+      margin: 2rem auto 2.5rem auto;
+      padding: 1.5rem 1.5rem 2rem 1.5rem;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 20px rgba(44, 62, 80, 0.08);
+      animation: fadeIn 0.6s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .flashcard-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      gap: 1.2rem;
+      justify-content: space-between;
+    }
+    .flashcard-controls h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      color: #2c3e50;
+      letter-spacing: -1px;
+      flex: 1 1 60%;
+    }
+    .flashcard-controls .controls {
+      display: flex;
+      gap: 0.7rem;
+      align-items: center;
+      flex: 1 1 40%;
+      justify-content: flex-end;
+    }
+    .btn {
+      padding: 0.6rem 1.3rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(90deg, #3498db, #2ecc71);
+      color: #fff;
+      transition: background 0.2s, box-shadow 0.15s;
+      box-shadow: 0 2px 6px rgba(52, 152, 219, 0.07);
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, #2980b9, #27ae60);
+    }
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-width: 120px;
+    }
+    #progress-count {
+      font-size: 1.07rem;
+      font-weight: 500;
+      color: #34495e;
+      letter-spacing: 0.5px;
+      min-width: 46px;
+      text-align: right;
+    }
+    #progress-bar {
+      width: 80px;
+      height: 11px;
+      background: #ebebeb;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    #progress {
+      height: 100%;
+      background: linear-gradient(90deg, #2ecc71, #27ae60);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .flashcard-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 240px;
+      margin-bottom: 1.2rem;
+    }
+    .flashcard {
+      width: 340px;
+      height: 180px;
+      background: transparent;
+      perspective: 1200px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(.4,2,.6,1);
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 14px rgba(52, 152, 219, 0.10);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 16px;
+      padding: 1.2rem;
+      box-sizing: border-box;
+      backface-visibility: hidden;
+      transition: background 0.23s;
+    }
+    .flashcard-front {
+      background: #fff;
+      z-index: 2;
+    }
+    .flashcard-back {
+      background: #e8f6ef;
+      transform: rotateY(180deg);
+    }
+    .flashcard-front h3, .flashcard-back h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.13rem;
+      color: #2c3e50;
+    }
+    .flashcard-front p {
+      margin: 0;
+      font-size: 1.02rem;
+      color: #8395a7;
+    }
+    .flashcard-back p {
+      margin: 0;
+      font-size: 1.06rem;
+      color: #34495e;
+      text-align: center;
+    }
+    .navigation {
+      display: flex;
+      justify-content: center;
+      gap: 1.1rem;
+      margin-bottom: 1.2rem;
+    }
+    .nav-btn {
+      background: #f4f8fb;
+      color: #3498db;
+      border: 1px solid #d7eaf8;
+      font-weight: 600;
+      border-radius: 6px;
+      padding: 0.55rem 1.2rem;
+      box-shadow: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-btn:hover {
+      background: #3498db;
+      color: #fff;
+    }
+    .action-buttons {
+      text-align: center;
+      margin-bottom: 1.1rem;
+    }
+    .know-btn, .dontknow-btn {
+      padding: 0.55rem 1.25rem;
+      border: none;
+      margin: 0 0.7rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      outline: none;
+      box-shadow: 0 1px 4px rgba(52, 152, 219, 0.06);
+    }
+    .know-btn { background: #2ecc71; color: #fff;}
+    .know-btn:hover { background: #27ae60;}
+    .dontknow-btn { background: #e74c3c; color: #fff;}
+    .dontknow-btn:hover { background: #c0392b;}
+    .review-stats {
+      margin: 2.6rem 0 0 0;
+      background: #f9fbfd;
+      border-radius: 10px;
+      padding: 1.2rem 1.1rem 1.1rem 1.1rem;
+      box-shadow: 0 2px 8px #ecf0f1;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .review-stats-title {
+      font-size: 1.08rem;
+      color: #2c3e50;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .review-bar {
+      width: 100%;
+      background: #ebeef2;
+      border-radius: 6px;
+      margin: 0.5rem 0;
+      height: 13px;
+      display: block;
+      overflow: hidden;
+    }
+    .review-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #2ecc71, #27ae60);
+      border-radius: 6px;
+      transition: width 0.5s;
+    }
+    .review-summary {
+      text-align: center;
+      color: #34495e;
+      font-size: 0.99rem;
+      margin-bottom: 0.7rem;
+    }
+    .stats-table {
+      width: 100%;
+      margin: 0.5rem auto 0 auto;
+      font-size: 0.96rem;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .stats-table th, .stats-table td {
+      padding: 4px 8px;
+      text-align: left;
+    }
+    .stats-table th {
+      background: #f2faff;
+      font-weight: 600;
+      color: #2980b9;
+      border-bottom: 1px solid #e1e7ea;
+    }
+    .stats-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .stats-table td {
+      color: #2d3436;
+    }
+    @media (max-width: 600px) {
+      .main-section { padding: 0.6rem 0.3rem 1rem 0.3rem;}
+      .flashcard { width: 98vw; min-width: 210px; height: 170px; }
+      .flashcard-front, .flashcard-back { padding: 1rem 0.6rem;}
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -22,48 +272,83 @@
       </ul>
     </nav>
   </header>
-
-  <main class="flashcards-container">
-    <section class="flashcard-controls">
-      <h2>Interactive Flashcards</h2>
-      <div class="controls">
-        <button id="new-card" class="btn">+ New Card</button>
-        <button id="shuffle" class="btn">🔀 Shuffle</button>
-        <div class="progress">
-          <span id="progress-count">1/5</span>
-          <div id="progress-bar">
-            <div id="progress"></div>
+  <main>
+    <section class="main-section">
+      <div class="flashcard-controls">
+        <h2>Interactive Flashcards</h2>
+        <div class="controls">
+          <button id="new-card" class="btn" title="Add a new flashcard">+ New Card</button>
+          <button id="shuffle" class="btn" title="Shuffle flashcards">🔀 Shuffle</button>
+          <div class="progress" title="Progress">
+            <span id="progress-count">1/10</span>
+            <div id="progress-bar"><div id="progress"></div></div>
           </div>
         </div>
       </div>
-    </section>
-
-    <div class="flashcard-wrapper">
-      <div class="flashcard" id="flashcard">
-        <div class="flashcard-front">
-          <h3>What is HTML?</h3>
-          <p>Click to reveal answer</p>
-        </div>
-        <div class="flashcard-back">
-          <h3>Answer:</h3>
-          <p>HyperText Markup Language - the standard markup language for documents designed to be displayed in a web browser.</p>
+      <div class="flashcard-wrapper">
+        <div class="flashcard" id="flashcard">
+          <div class="flashcard-front">
+            <h3>What is HTML?</h3>
+            <p>Click to reveal answer</p>
+          </div>
+          <div class="flashcard-back">
+            <h3>Answer:</h3>
+            <p>HyperText Markup Language - the standard markup language for documents designed to be displayed in a web browser.</p>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="navigation">
-      <button id="prev" class="btn nav-btn">← Previous</button>
-      <button id="flip" class="btn nav-btn">Flip Card</button>
-      <button id="next" class="btn nav-btn">Next →</button>
-    </div>
+      <div class="navigation">
+        <button id="prev" class="btn nav-btn" title="Previous card">← Previous</button>
+        <button id="flip" class="btn nav-btn" title="Flip this card">Flip Card</button>
+        <button id="next" class="btn nav-btn" title="Next card">Next →</button>
+      </div>
+      <div class="action-buttons">
+        <button class="know-btn" id="know-btn" title="You knew it!">I Knew This</button>
+        <button class="dontknow-btn" id="dontknow-btn" title="You didn't know it">I Didn’t Know</button>
+      </div>
+      <div class="review-stats">
+        <div class="review-stats-title">Spaced Repetition Review Progress</div>
+        <div class="review-bar">
+          <div class="review-bar-inner" id="review-bar-inner" style="width:0%"></div>
+        </div>
+        <div class="review-summary" id="review-summary"></div>
+        <table class="stats-table" id="review-table">
+          <thead>
+            <tr>
+              <th>Card</th>
+              <th>Known</th>
+              <th>Don't Know</th>
+              <th>Last Reviewed</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
   </main>
-
   <footer>
-        <p>&copy; 2025 SmartLearn. All rights reserved.</p>
+    <p>&copy; 2025 SmartLearn. All rights reserved.</p>
   </footer>
-
   <script>
-    // Flashcard functionality
+    // Helper to generate a unique id for each card
+    function uniqueId() {
+      return 'fc_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    }
+
+    // Default cards with unique IDs
+    const defaultCards = [
+      { id: uniqueId(), front: "What is HTML?", back: "HyperText Markup Language - the standard markup language for documents designed to be displayed in a web browser." },
+      { id: uniqueId(), front: "What is CSS?", back: "Cascading Style Sheets - a style sheet language used for describing the presentation of a document written in HTML." },
+      { id: uniqueId(), front: "What is JavaScript?", back: "A programming language that conforms to the ECMAScript specification, used to make web pages interactive." },
+      { id: uniqueId(), front: "What is the DOM?", back: "Document Object Model - a programming interface for web documents that represents the page as nodes and objects." },
+      { id: uniqueId(), front: "What is responsive design?", back: "An approach to web design that makes web pages render well on a variety of devices and window sizes." },
+      { id: uniqueId(), front: "What is a closure in JavaScript?", back: "A function that has access to its own scope, the outer function's variables, and global variables." },
+      { id: uniqueId(), front: "What does AJAX stand for?", back: "Asynchronous JavaScript and XML - a technique for creating fast and dynamic web pages." },
+      { id: uniqueId(), front: "What is JSON?", back: "JavaScript Object Notation - a lightweight data interchange format that's easy for humans to read and write." },
+      { id: uniqueId(), front: "What is an API?", back: "Application Programming Interface - a set of definitions and protocols for building and integrating application software." },
+      { id: uniqueId(), front: "What is npm?", back: "Node Package Manager - the world's largest software registry for publishing and sharing packages of code." }
+    ];
+
     document.addEventListener('DOMContentLoaded', () => {
       const flashcard = document.getElementById('flashcard');
       const flipBtn = document.getElementById('flip');
@@ -71,84 +356,134 @@
       const prevBtn = document.getElementById('prev');
       const newCardBtn = document.getElementById('new-card');
       const shuffleBtn = document.getElementById('shuffle');
-      
-      // Sample flashcard data
-      let cards = [
-        { front: "What is HTML?", back: "HyperText Markup Language - the standard markup language for documents designed to be displayed in a web browser." },
-        { front: "What is CSS?", back: "Cascading Style Sheets - a style sheet language used for describing the presentation of a document written in HTML." },
-        { front: "What is JavaScript?", back: "A programming language that conforms to the ECMAScript specification, used to make web pages interactive." },
-        { front: "What is a DOM?", back: "Document Object Model - a programming interface for web documents that represents the page as nodes and objects." },
-        { front: "What is responsive design?", back: "An approach to web design that makes web pages render well on a variety of devices and window sizes." },
-        { front: "What is a closure in JavaScript?", back: "A function that has access to its own scope, the outer function's variables, and global variables." },
-        { front: "What is AJAX?", back: "Asynchronous JavaScript and XML - a technique for creating fast and dynamic web pages." },
-        { front: "What is JSON?", back: "JavaScript Object Notation - a lightweight data interchange format that's easy for humans to read and write." },
-        { front: "What is an API?", back: "Application Programming Interface - a set of definitions and protocols for building and integrating application software." },
-        { front: "What is npm?", back: "Node Package Manager - the world's largest software registry for publishing and sharing packages of code." }
-      ];
-      
+      const knowBtn = document.getElementById('know-btn');
+      const dontKnowBtn = document.getElementById('dontknow-btn');
+      const progressCount = document.getElementById('progress-count');
+      const progressBar = document.getElementById('progress');
+      const reviewBarInner = document.getElementById('review-bar-inner');
+      const reviewSummary = document.getElementById('review-summary');
+      const reviewTable = document.getElementById('review-table').querySelector('tbody');
+
+      // Load cards and stats from localStorage, or use defaults
+      function loadCards() {
+        let cards = JSON.parse(localStorage.getItem('smartlearn-flashcards'));
+        if (!cards || !Array.isArray(cards) || !cards.every(card => card.id)) {
+          // If missing or old format, reset to defaults
+          cards = defaultCards.map(card => ({ ...card }));
+        }
+        return cards;
+      }
+      function loadStats() {
+        let stats = JSON.parse(localStorage.getItem('smartlearn-flashcard-reviews') || '{}');
+        if (typeof stats !== 'object' || stats === null) stats = {};
+        return stats;
+      }
+      function saveCards() {
+        localStorage.setItem('smartlearn-flashcards', JSON.stringify(cards));
+        localStorage.setItem('smartlearn-flashcard-reviews', JSON.stringify(reviewStats));
+      }
+
+      let cards = loadCards();
       let currentIndex = 0;
-      
-      // Flip card function
-      function flipCard() {
-        flashcard.classList.toggle('flipped');
-      }
-      
-      // Update card display
+      let reviewStats = loadStats();
+
+      // --- Flip animation
+      function flipCard() { flashcard.classList.toggle('flipped'); }
+
+      // --- Card Display
       function updateCard() {
-        const front = document.querySelector('.flashcard-front h3');
-        const back = document.querySelector('.flashcard-back p');
-        front.textContent = cards[currentIndex].front;
-        back.textContent = cards[currentIndex].back;
-        document.getElementById('progress-count').textContent = `${currentIndex + 1}/${cards.length}`;
-        document.getElementById('progress').style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
-        
-        // Reset flip state if card was flipped
-        if (flashcard.classList.contains('flipped')) {
-          flashcard.classList.remove('flipped');
-        }
+        const front = flashcard.querySelector('.flashcard-front h3');
+        const back = flashcard.querySelector('.flashcard-back p');
+        front.textContent = cards[currentIndex]?.front || '';
+        back.textContent = cards[currentIndex]?.back || '';
+        progressCount.textContent = `${currentIndex + 1}/${cards.length}`;
+        progressBar.style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+        flashcard.classList.remove('flipped');
+        updateReviewStatsUI();
       }
-      
-      // Event listeners
-      flipBtn.addEventListener('click', flipCard);
-      flashcard.addEventListener('click', flipCard);
-      
-      nextBtn.addEventListener('click', () => {
-        if (currentIndex < cards.length - 1) {
-          currentIndex++;
-          updateCard();
-        }
-      });
-      
-      prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-          currentIndex--;
-          updateCard();
-        }
-      });
-      
+
+      // --- Add new card
       newCardBtn.addEventListener('click', () => {
         const frontText = prompt("Enter front of card:");
         if (frontText) {
           const backText = prompt("Enter back of card:");
           if (backText) {
-            cards.push({ front: frontText, back: backText });
+            const card = { id: uniqueId(), front: frontText, back: backText };
+            cards.push(card);
             currentIndex = cards.length - 1;
+            saveCards();
             updateCard();
           }
         }
       });
-      
+
+      // --- Shuffle cards
       shuffleBtn.addEventListener('click', () => {
-        // Fisher-Yates shuffle algorithm
         for (let i = cards.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [cards[i], cards[j]] = [cards[j], cards[i]];
         }
         currentIndex = 0;
+        saveCards();
         updateCard();
       });
-      
-      // Initialize first card
+
+      // --- Navigation
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < cards.length - 1) { currentIndex++; updateCard(); }
+      });
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) { currentIndex--; updateCard(); }
+      });
+
+      // --- Flip
+      flipBtn.addEventListener('click', flipCard);
+      flashcard.addEventListener('click', flipCard);
+
+      // --- Know/Don't Know
+      knowBtn.addEventListener('click', () => updateReview(true));
+      dontKnowBtn.addEventListener('click', () => updateReview(false));
+
+      // --- Spaced repetition stats by card id
+      function updateReview(know) {
+        const card = cards[currentIndex];
+        if (!card) return;
+        if (!reviewStats[card.id]) {
+          reviewStats[card.id] = { known: 0, dontknow: 0, last: '' };
+        }
+        if (know) reviewStats[card.id].known++;
+        else reviewStats[card.id].dontknow++;
+        reviewStats[card.id].last = new Date().toISOString();
+        // If "know", move card to end, keep id-stats association
+        if (know && cards.length > 1) {
+          const moved = cards.splice(currentIndex, 1)[0];
+          cards.push(moved);
+          currentIndex = Math.min(currentIndex, cards.length - 1);
+        }
+        saveCards();
+        updateCard();
+      }
+
+      // --- Review stats table (order matches cards)
+      function updateReviewStatsUI() {
+        let knownCount = 0, total = cards.length;
+        reviewTable.innerHTML = '';
+        cards.forEach((card, i) => {
+          const stat = reviewStats[card.id] || { known: 0, dontknow: 0, last: '-' };
+          if (stat.known > stat.dontknow) knownCount++;
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${card.front.slice(0, 24)}${card.front.length>24?"…":""}</td>
+            <td>${stat.known}</td>
+            <td>${stat.dontknow}</td>
+            <td>${stat.last && stat.last !== '-' ? new Date(stat.last).toLocaleDateString() : '-'}</td>`;
+          reviewTable.appendChild(row);
+        });
+        const percent = total === 0 ? 0 : Math.round((knownCount / total) * 100);
+        reviewBarInner.style.width = percent + '%';
+        reviewSummary.textContent = `Mastered: ${knownCount}/${total} cards (${percent}%)`;
+      }
+
+      // --- First render
       updateCard();
     });
   </script>
