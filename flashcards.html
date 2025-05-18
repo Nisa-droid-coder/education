@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartLearn - Flashcards</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="brain.png" alt="SmartLearn Logo">
+    </div>
+    <h1>SmartLearn</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flashcards.html" class="active">Flashcards</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="tracker.html">Lesson Tracker</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="flashcards-container">
+    <section class="flashcard-controls">
+      <h2>Interactive Flashcards</h2>
+      <div class="controls">
+        <button id="new-card" class="btn">+ New Card</button>
+        <button id="shuffle" class="btn">🔀 Shuffle</button>
+        <div class="progress">
+          <span id="progress-count">1/5</span>
+          <div id="progress-bar">
+            <div id="progress"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="flashcard-wrapper">
+      <div class="flashcard" id="flashcard">
+        <div class="flashcard-front">
+          <h3>What is HTML?</h3>
+          <p>Click to reveal answer</p>
+        </div>
+        <div class="flashcard-back">
+          <h3>Answer:</h3>
+          <p>HyperText Markup Language - the standard markup language for documents designed to be displayed in a web browser.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button id="prev" class="btn nav-btn">← Previous</button>
+      <button id="flip" class="btn nav-btn">Flip Card</button>
+      <button id="next" class="btn nav-btn">Next →</button>
+    </div>
+  </main>
+
+  <footer>
+        <p>&copy; 2025 SmartLearn. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Flashcard functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const flashcard = document.getElementById('flashcard');
+      const flipBtn = document.getElementById('flip');
+      const nextBtn = document.getElementById('next');
+      const prevBtn = document.getElementById('prev');
+      const newCardBtn = document.getElementById('new-card');
+      const shuffleBtn = document.getElementById('shuffle');
+      
+      // Sample flashcard data
+      let cards = [
+        { front: "What is HTML?", back: "HyperText Markup Language - the standard markup language for documents designed to be displayed in a web browser." },
+        { front: "What is CSS?", back: "Cascading Style Sheets - a style sheet language used for describing the presentation of a document written in HTML." },
+        { front: "What is JavaScript?", back: "A programming language that conforms to the ECMAScript specification, used to make web pages interactive." },
+        { front: "What is a DOM?", back: "Document Object Model - a programming interface for web documents that represents the page as nodes and objects." },
+        { front: "What is responsive design?", back: "An approach to web design that makes web pages render well on a variety of devices and window sizes." },
+        { front: "What is a closure in JavaScript?", back: "A function that has access to its own scope, the outer function's variables, and global variables." },
+        { front: "What is AJAX?", back: "Asynchronous JavaScript and XML - a technique for creating fast and dynamic web pages." },
+        { front: "What is JSON?", back: "JavaScript Object Notation - a lightweight data interchange format that's easy for humans to read and write." },
+        { front: "What is an API?", back: "Application Programming Interface - a set of definitions and protocols for building and integrating application software." },
+        { front: "What is npm?", back: "Node Package Manager - the world's largest software registry for publishing and sharing packages of code." }
+      ];
+      
+      let currentIndex = 0;
+      
+      // Flip card function
+      function flipCard() {
+        flashcard.classList.toggle('flipped');
+      }
+      
+      // Update card display
+      function updateCard() {
+        const front = document.querySelector('.flashcard-front h3');
+        const back = document.querySelector('.flashcard-back p');
+        front.textContent = cards[currentIndex].front;
+        back.textContent = cards[currentIndex].back;
+        document.getElementById('progress-count').textContent = `${currentIndex + 1}/${cards.length}`;
+        document.getElementById('progress').style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+        
+        // Reset flip state if card was flipped
+        if (flashcard.classList.contains('flipped')) {
+          flashcard.classList.remove('flipped');
+        }
+      }
+      
+      // Event listeners
+      flipBtn.addEventListener('click', flipCard);
+      flashcard.addEventListener('click', flipCard);
+      
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < cards.length - 1) {
+          currentIndex++;
+          updateCard();
+        }
+      });
+      
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateCard();
+        }
+      });
+      
+      newCardBtn.addEventListener('click', () => {
+        const frontText = prompt("Enter front of card:");
+        if (frontText) {
+          const backText = prompt("Enter back of card:");
+          if (backText) {
+            cards.push({ front: frontText, back: backText });
+            currentIndex = cards.length - 1;
+            updateCard();
+          }
+        }
+      });
+      
+      shuffleBtn.addEventListener('click', () => {
+        // Fisher-Yates shuffle algorithm
+        for (let i = cards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [cards[i], cards[j]] = [cards[j], cards[i]];
+        }
+        currentIndex = 0;
+        updateCard();
+      });
+      
+      // Initialize first card
+      updateCard();
+    });
+  </script>
+</body>
+</html>
